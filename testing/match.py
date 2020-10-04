@@ -102,7 +102,7 @@ def register_employee():
     connection = MySQLdb.connect(
         host='mysql',
         user='root',
-        passwd='mysql',
+        passwd='password',
         db='employee',
         charset='utf8'
     )
