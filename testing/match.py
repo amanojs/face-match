@@ -78,6 +78,8 @@ def faceId():
 
     response = {
         "data":"",
+        "name":"",
+        "age": 0,
         "status": 404
     }
 
@@ -100,7 +102,9 @@ def faceId():
         emp_data = cur.fetchone()
 
         response["status"] = 200
-        response["data"] = emp_data[1]
+        response["data"] = "match!"
+        response["name"] = emp_data[1]
+        response["age"] = emp_data[2]
         connection.close()
     else:
         print("本人のデータは存在しません")
