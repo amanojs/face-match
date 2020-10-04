@@ -82,12 +82,21 @@ def faceId():
     }
 
     if dists.min() < 0.43:
+        connection = MySQLdb.connect(
+            host='mysql',
+            user='root',
+            passwd='password',
+            db='employee',
+            charset='utf8'
+        )
         index_min = np.argmin(dists)
         print(index_min)
         print(files_path)
         print(known_imgs_path[index_min] + "は本人です")
+        print(files[index_min])
         response["status"] = 200
         response["data"] = known_imgs_path[index_min]
+        connection.close()
     else:
         print("本人のデータは存在しません")
         response["data"] = "not match"
