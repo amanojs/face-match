@@ -141,6 +141,12 @@ def register_employee():
         savefile.save(os.path.join("./images",savefile_name))
 
         connection.commit()
+
+        cur.execute("SELECT * FROM employee")
+        rows = cur.fetchall()
+        for row in rows:
+            print(row)
+
         cur.close()
         connection.close()
         response["data"] = emp_id
