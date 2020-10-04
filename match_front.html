@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>match_front</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+
+    <input type="file" id="file">
+    <button id="btnaxios">POST</button>
+
+    <input type="text" placeholder="name" id="reg_name">
+    <input type="number" placeholder="20" id="reg_age">
+    <input type="file" id="reg_file">
+    <button id="regibtn">register</button>
+
+
+    <script>
+        let file
+
+        const btnaxios = document.getElementById("btnaxios")
+        const regibtn = document.getElementById("regibtn")
+        btnaxios.addEventListener('click', async (evt) => {
+            const url = "http://localhost:3000/faceId"
+            console.log('axios')
+            console.log(document.getElementById("file").files[0])
+            const data = new FormData()
+            data.append("image", document.getElementById("file").files[0])
+            const headers = { "content-type": "multipart/form-data" };
+            const res = await axios.post(url, data, { headers });
+            console.log(res)
+            /* const body = new FormData()
+            body.append('img', f)
+            body.append('foo', 'fuga')
+            axios.post('file.php', body) */
+        })
+
+        regibtn.addEventListener('click', async (evt) => {
+            const url = "http://localhost:3000/register"
+            console.log(document.getElementById("reg_file").files[0])
+            const data = new FormData()
+            data.append("image", document.getElementById("reg_file").files[0])
+            data.append("name", document.getElementById("reg_name").value)
+            data.append("age", document.getElementById("reg_age").value)
+            const headers = { "content-type": "multipart/form-data" };
+            const res = await axios.post(url, data, { headers });
+            console.log(res)
+            /* const body = new FormData()
+            body.append('img', f)
+            body.append('foo', 'fuga')
+            axios.post('file.php', body) */
+        })
+    </script>
+</body>
+
+</html>
