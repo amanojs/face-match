@@ -93,7 +93,7 @@ def faceId():
         print(index_min)
         print(files_path)
         print(known_imgs_path[index_min] + "は本人です")
-        print(files[index_min])
+        print(files[index_min].strip(".jpg"))
         response["status"] = 200
         response["data"] = known_imgs_path[index_min]
         connection.close()
