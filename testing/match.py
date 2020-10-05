@@ -190,9 +190,10 @@ def getEmployee():
     }
 
     for row in rows:
+        print(type(row[1]))
         data = {
             "id": row[0],
-            "name": row[1],
+            "name": str(row[1]),
             "age": row[2]
         }
         response["data"].append(data)
