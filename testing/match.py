@@ -184,7 +184,20 @@ def getEmployee():
     rows = cur.fetchall()
     cur.close()
     connection.close()
-    return make_response(jsonify(rows))
+    
+    response = {
+        "data":[]
+    }
+
+    for row in rows:
+        data = {
+            "id": row[0],
+            "name": row[1],
+            "age": row[2]
+        }
+        response["data"].append(data)
+
+    return make_response(jsonify(response))
 
 
 
