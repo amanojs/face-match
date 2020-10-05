@@ -116,15 +116,6 @@ def is_picture():
 
 @app.route("/register",methods=["POST"])
 def register_employee():
-
-    connection = MySQLdb.connect(
-        host='mysql',
-        user='root',
-        passwd='password',
-        db='employee',
-        charset='utf8'
-    )
-
     file = request.files['image']
     print(file)
     face_img_to_check = face_recognition.load_image_file(file)
@@ -138,6 +129,14 @@ def register_employee():
     else:
         name = str(request.form["name"])
         age = int(request.form["age"])
+
+        connection = MySQLdb.connect(
+            host='mysql',
+            user='root',
+            passwd='password',
+            db='employee',
+            charset='utf8'
+        )
 
         cur = connection.cursor()
         sql = "insert into employee values(null,'%s',%s)" % (name,age)
@@ -171,6 +170,21 @@ def register_employee():
         response["status"] = 200
         return make_response(jsonify(response))
 
+@api.route("/getEmployee",methods=["GET"])
+def getEmployee():
+    connection = MySQLdb.connect(
+        host='mysql',
+        user='root',
+        passwd='password',
+        db='employee',
+        charset='utf8'
+    )
+    cur = connection.cursor()
+    cur.execute("SELECT * FROM employee")
+    rows = cur.fetchall()
+    cur.close()
+    connection.close()
+    return make_response(jsonify(rows))
 
 
 
