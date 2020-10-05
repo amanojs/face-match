@@ -216,6 +216,7 @@ def updateEmployee():
     cur = connection.cursor()
     cur.execute("UPDATE employee SET name = '%s',age = %s WHERE id = %s" % (emp_name,emp_age,emp_id))
 
+    cur.commit()
     cur.close()
     connection.close()
     response = {
