@@ -170,7 +170,7 @@ def register_employee():
         response["status"] = 200
         return make_response(jsonify(response))
 
-@api.route("/getEmployee",methods=["GET"])
+@app.route("/getEmployee",methods=["GET"])
 def getEmployee():
     connection = MySQLdb.connect(
         host='mysql',
