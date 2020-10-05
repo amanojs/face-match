@@ -190,7 +190,7 @@ def getEmployee():
     }
 
     for row in rows:
-        print(type(row[1]))
+        print(row[1])
         data = {
             "id": row[0],
             "name": str(row[1]),
@@ -198,6 +198,29 @@ def getEmployee():
         }
         response["data"].append(data)
 
+    return make_response(jsonify(response))
+
+
+@app.route("/updateEmployee",methods=["POST"])
+def updateEmployee():
+    emp_id = int(request.form["id"])
+    emp_name =  str(request.form["name"])
+    emp_age = int(equest.form["age"])
+    connection = MySQLdb.connect(
+        host='mysql',
+        user='root',
+        passwd='password',
+        db='employee',
+        charset='utf8'
+    )
+    cur = connection.cursor()
+    cur.execute("UPDATE employee SET name = '%s',age = %s WHERE id = %s" % (emp_name,emp_age,emp_id))
+
+    cur.close()
+    connection.close()
+    response = {
+        "status": 200
+    }
     return make_response(jsonify(response))
 
 
