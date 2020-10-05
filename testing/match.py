@@ -205,7 +205,7 @@ def getEmployee():
 def updateEmployee():
     emp_id = int(request.form["id"])
     emp_name =  str(request.form["name"])
-    emp_age = int(equest.form["age"])
+    emp_age = int(request.form["age"])
     connection = MySQLdb.connect(
         host='mysql',
         user='root',
