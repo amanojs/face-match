@@ -22,10 +22,6 @@ connection.close """
 def faceId():
 
     file = request.files['image']
-    print(request.form)
-    print(request.form["name"])
-    print(request.form["age"])
-    print(request.form["company_id"])
     if file and file.filename:
         print(file)
 
