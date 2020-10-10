@@ -275,7 +275,8 @@ def work_start():
         )
         cur = connection.cursor()
         sql = "select id,start from time_table where %s = id and %s = date" % (emp_id,date)
-        result = cur.execute(sql)
+        cur.execute(sql)
+        result = cur.fetchall()
         print("adfafadsf",result)
 
         # 既にデータがあるので500番エラー
