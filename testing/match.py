@@ -274,7 +274,7 @@ def work_start():
                 charset='utf8'
         )
         cur = connection.cursor()
-        sql = "select id,start from time_table where %s = id and %s = date" % (emp_id,date)
+        sql = "select id,start from time_table where id = %s and date = '%s' " % (emp_id,date)
         cur.execute(sql)
         result = cur.fetchall()
         print("adfafadsf",result)
