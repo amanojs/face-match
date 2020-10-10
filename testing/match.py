@@ -336,6 +336,10 @@ def work_end():
         sql = "select start from time_table where %s = id and (date = '%s' or date_next = '%s')"% (emp_id,date,date)
         cur.execute(sql)
         result = cur.fetchall()
+
+        response = {
+            "status": 200
+        }
         
         if len(result) != 0:
             # 今日か明日の出勤データが存在している
