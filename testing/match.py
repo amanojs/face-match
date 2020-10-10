@@ -345,12 +345,12 @@ def work_end():
             # 今日か明日の出勤データが存在している
             sql = "select start from time_table where %s = id and (date = '%s' or date_next = '%s') and start = end" % (emp_id,date,date)
             cur.execute(sql)
-            result = cur.fetchone()
+            result = cur.fetchall()
 
             if len(result) != 0:
                 # 出勤時間と退勤時間が同じ→まだ退勤していないデータがある
-                print("result0",result[0])
-                sql = "select hour(timediff('%s', '%s'))" % (time,result[0])
+                print("result0",result[0][0])
+                sql = "select hour(timediff('%s', '%s'))" % (time,result[0][0])
                 cur.execute(sql)
                 result = cur.fetchone()[0]
                 print("hour",result)
