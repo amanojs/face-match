@@ -257,11 +257,14 @@ def loginCompany():
 
 @app.route("/start_time",methods=["POST"])
 def work_start():
-        emp_id = int(request.form["id"])
+        """ emp_id = int(request.form["id"])
         start = str(request.form["start"])
         end = str(request.form["end"])
         date = str(request.form["date"])
-        date_next = str(request.form["date_next"])
+        date_next = str(request.form["date_next"]) """
+        emp_id = 6
+        start = "2020-10-10 09:00:00"
+        end = ""
         connection = MySQLdb.connect(
                 host='mysql',
                 user='root',
@@ -270,8 +273,8 @@ def work_start():
                 charset='utf8'
         )
         cur = connection.cursor()
-        sql = "select employee_id from time_table where %s = employee_id and %s = date" % (emp_id,date)
-        result = cur.execute(sql)
+        sql = "select id from time_table where %s = id and %s = date" % (emp_id,date)
+        result = cur.execute(sql).fetchall()
 
         # 既にデータがあるので500番エラー
 
@@ -286,13 +289,13 @@ def work_start():
 
         sql = "insert into time_table values(%s,'%s','%s','%s','%s')" % (emp_id,start,end,date,date_next)
         cur.execute(sql)
-        connect.commit()
+        connection.commit()
 
         sql = "select id from time_table where %s = id and '%s' = date" % (emp_id,date)
-        result = cur.execute(sql)
+        result = cur.execute(sql).fetchall()
 
         # インサート成功してデータが確認出来たら200ステータスを返す
-        if result != 0:
+        if len(result) != 0:
                 response["status"] = 200
                 cur.close()
                 connection.close()
@@ -307,8 +310,9 @@ def work_start():
 @app.route("/end_time",methods=["POST"])
 def work_end():
         emp_id = int(request.form["id"])
-        time = str(request.form["id"])
-        date = str(request.form["id"])
+        time = str(request.form["now_time"])
+        date = str(request.form["date"])
+        company = str(request.form["company_id"])
         connection = MySQLdb.connect(
                 host='mysql',
                 user='root',
@@ -317,77 +321,56 @@ def work_end():
                 charset='utf8'
         )
         cur = connection.cursor()
-        sql = "select start from time_table where %s = id and '%s' = date and start = end" % (emp_id,date)
-        result = cur.execute(sql)
+        sql = "select start from time_table where %s = id and (date = '%s' or date_next = '%s')"% (emp_id,date,date)
+        result = cur.execute(sql).fetchall()
+        
+        if len(result) != 0:
+            # 今日か明日の出勤データが存在している
+            sql = "select start from time_table where %s = id and (date = '%s' or date_next = '%s') and start = end" % (emp_id,date,date)
+            result = cur.execute(sql).fetchone()
 
-        response = {
-            "status": 200
-        }
-        if (result == ""):
-                sql = "select start from time_table where %s = id and '%s' = date_next and start = end" % (emp_id,date)
+            if len(result) != 0:
+                # 出勤時間と退勤時間が同じ→まだ退勤していないデータがある
+                sql = "select hour(timediff('%s', '%s'))" % (date,result[0])
                 result = cur.execute(sql)
-                if(result != ""):
-                        # 出勤と退勤が同じ値の日付が今日か明日のものがある場合
-                        # 時間分秒を抽出してない場合
-                        # select TIME('ここに時間を入れる')
-                        # 退勤時間が0時を超える場合は24＋して計算する
-                        sql = "select DAY('start') from time_table"
-                        startday = cur.execute(sql)
-
-                        sql = "select DAY('%s') from time_table" % (date,)
-                        endday = cur.execute(sql)
-
-                        if(startday == endday):
-                                sql = "select subtime('%s', 'start')" % (date,)
-                                worktime = cur.execute(sql)
-                                sql = "select hour('worktime') from time_table"
-                                result = cur.execute(sql)
-
-                                if(result >= 15):
-                                        response["status"] = 500
-                                        cur.close()
-                                        connection.close()
-                                        return make_response(jsonify(response))
-                                else:
-                                        sql = "update time_table set end = '%s' where employee_id = %s and date = '%s' or date_next = '%s'"%(time,emp_id,date,date)
-                                        cur.execute(sql)
-                                        response["status"] = 200
-                                        cur.close()
-                                        connection.close()
-                                        return make_response(jsonify(response))
-                        else:
-                                sql = "select addtime('%s', '24:00:00') from time_table" % (date,)
-                                endtime = cur.execute(sql)
-                                sql = "select subtime('endtime', 'start') from time_table"
-                                worktime = cur.execute(sql)
-                                sql = "select hour('woektime') from time_table"
-                                result = cur.execute(sql)
-
-                                if(result >= 15):
-                                        response["status"] = 500
-                                        cur.close()
-                                        connection.close()
-                                        return make_response(jsonify(response))
-                                else:
-                                        sql = "update time_table set end = '%s' where id = %s and date = '%s' or date_next = '%s'" % (time,emp_id,date,date)
-                                        cur.execute(sql)
-                                        response["status"] = 200
-                                        cur.close()
-                                        connection.close()
-                                        return make_response(jsonify(response))
+    
+                if(result >= 15):
+                    # 410→勤務限界時間をオーバー
+                    response["status"] = 410
+                    cur.close()
+                    connection.close()
+                    return make_response(jsonify(response))
+                    
                 else:
-                        # 出勤と退勤が同じ値の日付が今日か明日のものがない場合
-                        response["status"] = 500
-                        cur.close()
-                        connection.close()
-                        return make_response(jsonify(response))
+                    sql = "update time_table set end = '%s' where id = %s and date = '%s' or date_next = '%s'" % (time,emp_id,date,date)
+                    cur.execute(sql)
+                    connection.commit()
+                    response["status"] = 200
+                    cur.close()
+                    connection.close()
+                    return make_response(jsonify(response))
 
-        # 既にデータがあるので500番エラー
-        if(result != 0):
-                response["status"] = 500
+            else:
+                # 出勤時間と退勤時間が違うデータがある
+                # 411→今日はもう退勤済みです
+                response["status"] = 411
                 cur.close()
                 connection.close()
                 return make_response(jsonify(response))
+            
+        else:
+            # 今日か明日の出勤データが存在しない
+            # 412→今日はまだ出勤していません
+            response["status"] = 412
+            cur.close()
+            connection.close()
+            return make_response(jsonify(response))
+
+        # 413→不明なエラーです
+        response["status"] = 413
+        cur.close()
+        connection.close()
+        return make_response(jsonify(response))
 
 
 
