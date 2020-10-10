@@ -258,13 +258,14 @@ def loginCompany():
 @app.route("/start_time",methods=["POST"])
 def work_start():
         """ emp_id = int(request.form["id"])
-        start = str(request.form["start"])
+        now_time = str(request.form["now_time"])
         end = str(request.form["end"])
         date = str(request.form["date"])
         date_next = str(request.form["date_next"]) """
         emp_id = 6
         start = "2020-10-10 09:00:00"
-        end = ""
+        date = "2020-10-10"
+
         connection = MySQLdb.connect(
                 host='mysql',
                 user='root',
@@ -287,7 +288,10 @@ def work_start():
                 connection.close()
                 return make_response(jsonify(response))
 
-        sql = "insert into time_table values(%s,'%s','%s','%s','%s')" % (emp_id,start,end,date,date_next)
+        sql = "select ADDTIME('%s 01:00:00','24:00:00')" % (date,)
+        result = cur.execute(sql).fetchone()[0]
+
+        sql = "insert into time_table values(%s,'%s','%s','%s','%s')" % (emp_id,start,end,date,result)
         cur.execute(sql)
         connection.commit()
 
