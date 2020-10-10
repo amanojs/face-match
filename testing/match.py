@@ -346,7 +346,7 @@ def work_end():
             if len(result) != 0:
                 # 出勤時間と退勤時間が同じ→まだ退勤していないデータがある
                 print("result0",result[0])
-                sql = "select hour(timediff('%s', '%s'))" % (date,result[0])
+                sql = "select hour(timediff('%s', '%s'))" % (time,result[0])
                 cur.execute(sql)
                 result = cur.fetchone()[0]
                 print("hour",result)
