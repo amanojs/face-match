@@ -291,14 +291,16 @@ def work_start():
                 return make_response(jsonify(response))
 
         sql = "select ADDTIME('%s 01:00:00','24:00:00')" % (date,)
-        result = cur.execute(sql).fetchone()[0]
+        cur.execute(sql)
+        result = cur.fetchone()[0]
 
         sql = "insert into time_table values(%s,'%s','%s','%s','%s')" % (emp_id,start,end,date,result)
         cur.execute(sql)
         connection.commit()
 
         sql = "select id from time_table where %s = id and '%s' = date" % (emp_id,date)
-        result = cur.execute(sql).fetchall()
+        cur.execute(sql)
+        result = cur.fetchall()
 
         # インサート成功してデータが確認出来たら200ステータスを返す
         if len(result) != 0:
@@ -328,17 +330,20 @@ def work_end():
         )
         cur = connection.cursor()
         sql = "select start from time_table where %s = id and (date = '%s' or date_next = '%s')"% (emp_id,date,date)
-        result = cur.execute(sql).fetchall()
+        cur.execute(sql)
+        result = cur.fetchall()
         
         if len(result) != 0:
             # 今日か明日の出勤データが存在している
             sql = "select start from time_table where %s = id and (date = '%s' or date_next = '%s') and start = end" % (emp_id,date,date)
-            result = cur.execute(sql).fetchone()
+            cur.execute(sql)
+            result = cur.fetchone()
 
             if len(result) != 0:
                 # 出勤時間と退勤時間が同じ→まだ退勤していないデータがある
                 sql = "select hour(timediff('%s', '%s'))" % (date,result[0])
-                result = cur.execute(sql)
+                cur.execute(sql)
+                result = cur.fetchone()[0]
     
                 if(result >= 15):
                     # 410→勤務限界時間をオーバー
