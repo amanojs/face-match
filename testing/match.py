@@ -322,8 +322,8 @@ def work_end():
         date = str(request.form["date"])
         company = str(request.form["company_id"]) """
         emp_id = 6
-        time = "2020-10-10 18:00:00"
-        date = "2020-10-10"
+        time = "2020-10-11 11:00:00"
+        date = "2020-10-11"
         company = 1
         connection = MySQLdb.connect(
                 host='mysql',
