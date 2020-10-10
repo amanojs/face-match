@@ -294,7 +294,7 @@ def work_start():
         cur.execute(sql)
         result = cur.fetchone()[0]
 
-        sql = "insert into time_table values(%s,'%s','%s','%s','%s')" % (emp_id,start,end,date,result)
+        sql = "insert into time_table values(%s,'%s','%s','%s','%s')" % (emp_id,start,start,date,result)
         cur.execute(sql)
         connection.commit()
 
