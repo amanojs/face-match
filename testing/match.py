@@ -274,9 +274,9 @@ def work_start():
                 charset='utf8'
         )
         cur = connection.cursor()
-        sql = "select id from time_table where %s = id and %s = date" % (emp_id,date)
+        sql = "select id,start from time_table where %s = id and %s = date" % (emp_id,date)
         result = cur.execute(sql)
-        print(result)
+        print("adfafadsf",result)
 
         # 既にデータがあるので500番エラー
 
