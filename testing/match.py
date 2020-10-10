@@ -345,9 +345,11 @@ def work_end():
 
             if len(result) != 0:
                 # 出勤時間と退勤時間が同じ→まだ退勤していないデータがある
+                print("result0",result)
                 sql = "select hour(timediff('%s', '%s'))" % (date,result[0])
                 cur.execute(sql)
                 result = cur.fetchone()[0]
+                print("hour",result)
     
                 if(result >= 15):
                     # 410→勤務限界時間をオーバー
