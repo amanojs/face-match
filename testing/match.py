@@ -317,10 +317,14 @@ def work_start():
 
 @app.route("/end_time",methods=["POST"])
 def work_end():
-        emp_id = int(request.form["id"])
+        """ emp_id = int(request.form["id"])
         time = str(request.form["now_time"])
         date = str(request.form["date"])
-        company = str(request.form["company_id"])
+        company = str(request.form["company_id"]) """
+        emp_id = 6
+        time = "2020-10-10 18:00:00"
+        date = "2020-10-10"
+        company = 1
         connection = MySQLdb.connect(
                 host='mysql',
                 user='root',
