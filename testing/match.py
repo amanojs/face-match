@@ -263,7 +263,7 @@ def work_start():
         date = str(request.form["date"])
         date_next = str(request.form["date_next"]) """
         emp_id = 6
-        start = "2020-10-10 09:00:00"
+        start = "2020-10-10 10:00:00"
         date = "2020-10-10"
 
         connection = MySQLdb.connect(
