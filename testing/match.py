@@ -172,6 +172,29 @@ def register_employee():
         response["status"] = 200
         return make_response(jsonify(response))
 
+@app.route("/deleteEmployee",methods=["POST"])
+def deleteEmployee():
+    emp_id = request.form["id"]
+    connection = MySQLdb.connect(
+        host='mysql',
+        user='root',
+        passwd='password',
+        db='employee',
+        charset='utf8'
+    )
+
+    cur = connection.cursor()
+    cur.execute("DELETE FROM employee WHERE id = %s" % (emp_id,))
+    connection.commit()
+
+    response = {
+        status:200
+    }
+
+    return make_response(jsonify(response))
+
+    
+
 @app.route("/getEmployee",methods=["GET"])
 def getEmployee():
 
